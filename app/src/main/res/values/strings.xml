@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">TaskManager</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab Text 3</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nameInput">Name:</string>
+    <string name="due_date">Due Date:</string>
+    <string name="due_time">Due Time:</string>
+    <string name="description_label">Description:</string>
+</resources>
