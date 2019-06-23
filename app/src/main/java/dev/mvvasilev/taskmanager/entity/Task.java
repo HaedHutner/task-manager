@@ -1,10 +1,13 @@
 package dev.mvvasilev.taskmanager.entity;
 
 import java.util.Date;
+import java.util.Objects;
 
 import dev.mvvasilev.taskmanager.enums.TaskPriority;
 
 public class Task {
+
+    private Long id;
 
     private String name;
 
@@ -16,9 +19,17 @@ public class Task {
 
     private TaskPriority taskPriority;
 
-    private boolean notifications;
+    private boolean notificationsEnabled;
 
     public Task() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -61,11 +72,30 @@ public class Task {
         this.taskPriority = taskPriority;
     }
 
-    public boolean isNotifications() {
-        return notifications;
+    public boolean areNotificationsEnabled() {
+        return notificationsEnabled;
     }
 
-    public void setNotifications(boolean notifications) {
-        this.notifications = notifications;
+    public void setNotificationsEnabled(boolean notificationsEnabled) {
+        this.notificationsEnabled = notificationsEnabled;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return notificationsEnabled == task.notificationsEnabled &&
+                Objects.equals(id, task.id) &&
+                Objects.equals(name, task.name) &&
+                Objects.equals(description, task.description) &&
+                Objects.equals(startDateTime, task.startDateTime) &&
+                Objects.equals(endDateTime, task.endDateTime) &&
+                taskPriority == task.taskPriority;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, startDateTime, endDateTime, taskPriority, notificationsEnabled);
     }
 }

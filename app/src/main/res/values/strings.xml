@@ -14,4 +14,11 @@
     <string name="start_time">Start Time:</string>
     <string name="priority">Priority:</string>
     <string name="notifications">Notifications:</string>
+    <string name="no_priority">No Priority</string>
+    <string name="high_priority">High</string>
+    <string name="normal_priority">Normal</string>
+    <string name="low_priority">Low</string>
+    <string name="ad">Advertisement</string>
+    <string name="starts">Starts:</string>
+    <string name="ends">Ends:</string>
 </resources>
