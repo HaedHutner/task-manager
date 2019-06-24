@@ -3,21 +3,14 @@ package dev.mvvasilev.taskmanager;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
 import dev.mvvasilev.taskmanager.ui.main.SectionsPagerAdapter;
 import dev.mvvasilev.taskmanager.ui.main.fragment.CreateTaskFragment;
 import dev.mvvasilev.taskmanager.ui.main.fragment.ListTasksFragment;
-import dev.mvvasilev.taskmanager.ui.main.fragment.RemoveAdsFragment;
 
 /**
  * Да се създаде дизайн за приложение „Организатор на задачи“.
@@ -41,7 +34,7 @@ import dev.mvvasilev.taskmanager.ui.main.fragment.RemoveAdsFragment;
  * В главното Activity да има ImageView, което да представлява реклама,
  * с опция да се скрива след 30 секунди след зареждане на Activity-то.
  */
-public class MainActivity extends AppCompatActivity implements ListTasksFragment.OnFragmentInteractionListener, CreateTaskFragment.OnFragmentInteractionListener, RemoveAdsFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements ListTasksFragment.OnFragmentInteractionListener, CreateTaskFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +45,23 @@ public class MainActivity extends AppCompatActivity implements ListTasksFragment
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                ListTasksFragment item = (ListTasksFragment) sectionsPagerAdapter.getItem(0);
+                item.refreshTasks(item.getView());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
 

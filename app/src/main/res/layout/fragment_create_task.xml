@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.main.fragment.CreateTaskFragment">
@@ -12,21 +13,19 @@
 
         <TableLayout
             android:id="@+id/createTask"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="15dp"
-            tools:layout_editor_absoluteX="15dp"
-            tools:layout_editor_absoluteY="15dp">
+            android:layout_width="385dp"
+            android:layout_height="373dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:shrinkColumns="2,3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TableRow
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent">
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
 
                 <TextView
                     android:id="@+id/taskNameLabel"
@@ -37,7 +36,7 @@
 
                 <EditText
                     android:id="@+id/taskNameInput"
-                    android:layout_width="165dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="textPersonName" />
@@ -45,25 +44,19 @@
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent">
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
 
                 <TextView
                     android:id="@+id/descriptionLabel"
-                    android:layout_width="wrap_content"
+                    android:layout_width="83dp"
                     android:layout_height="wrap_content"
                     android:text="@string/description_label"
                     android:textSize="18sp" />
 
                 <EditText
                     android:id="@+id/descriptionInput"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:gravity="start|top"
@@ -72,14 +65,8 @@
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent">
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
 
                 <TextView
                     android:id="@+id/startDateLabel"
@@ -90,21 +77,22 @@
 
                 <EditText
                     android:id="@+id/startDateInput"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="date" />
+
+                <EditText
+                    android:id="@+id/startTimeInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="time" />
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent">
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
 
                 <TextView
                     android:id="@+id/dueDateLabel"
@@ -115,21 +103,22 @@
 
                 <EditText
                     android:id="@+id/dueDateInput"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="date" />
+
+                <EditText
+                    android:id="@+id/dueTimeInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="time" />
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent">
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
 
                 <TextView
                     android:id="@+id/priorityLabel"
@@ -140,7 +129,7 @@
 
                 <RadioGroup
                     android:id="@+id/priorityInput"
-                    android:layout_width="328dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
                     <RadioButton
@@ -148,6 +137,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:checked="true"
                         android:text="@string/no_priority" />
 
                     <RadioButton
@@ -175,14 +165,8 @@
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent">
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
 
                 <TextView
                     android:id="@+id/notificationLabel"
@@ -191,11 +175,11 @@
                     android:text="@string/notifications"
                     android:textSize="18sp" />
 
-                <com.google.android.material.chip.Chip
+                <RadioButton
                     android:id="@+id/notificationInput"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+                    android:text="@string/enabled" />
 
             </TableRow>
 
@@ -203,14 +187,16 @@
 
         <Button
             android:id="@+id/createTaskButton"
-            android:layout_width="365dp"
-            android:layout_height="0dp"
+            android:layout_width="383dp"
+            android:layout_height="81dp"
             android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="Button"
-            app:layout_constraintBottom_toBottomOf="@+id/createTask"
-            app:layout_constraintEnd_toEndOf="@+id/createTask"
-            app:layout_constraintStart_toStartOf="@+id/createTask" />
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/create_task"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/createTask" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

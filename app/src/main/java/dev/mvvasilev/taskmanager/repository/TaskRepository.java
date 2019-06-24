@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteStatement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +19,7 @@ import dev.mvvasilev.taskmanager.enums.TaskPriority;
 
 public class TaskRepository extends SQLiteOpenHelper {
 
-    private static final DateFormat DATE_FORMAT = SimpleDateFormat.getDateTimeInstance();
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     private static final String SAVE_TASK = "" +
             "INSERT INTO tasks (name, description, startDate, dueDate, priority, notifications)" +
@@ -72,8 +74,8 @@ public class TaskRepository extends SQLiteOpenHelper {
             try (SQLiteStatement statement = db.compileStatement(SAVE_TASK)) {
                 statement.bindString(1, task.getName());
                 statement.bindString(2, task.getDescription());
-                statement.bindString(3, DATE_FORMAT.format(task.getStartDateTime()));
-                statement.bindString(4, DATE_FORMAT.format(task.getEndDateTime()));
+                statement.bindString(3, DATE_TIME_FORMATTER.format(task.getStartDateTime()));
+                statement.bindString(4, DATE_TIME_FORMATTER.format(task.getEndDateTime()));
                 statement.bindString(5, task.getTaskPriority().toString());
                 statement.bindLong(6, task.areNotificationsEnabled() ? 1 : 0);
 
@@ -87,8 +89,8 @@ public class TaskRepository extends SQLiteOpenHelper {
             try (SQLiteStatement statement = db.compileStatement(UPDATE_TASK)) {
                 statement.bindString(1, task.getName());
                 statement.bindString(2, task.getDescription());
-                statement.bindString(3, DATE_FORMAT.format(task.getStartDateTime()));
-                statement.bindString(4, DATE_FORMAT.format(task.getEndDateTime()));
+                statement.bindString(3, DATE_TIME_FORMATTER.format(task.getStartDateTime()));
+                statement.bindString(4, DATE_TIME_FORMATTER.format(task.getEndDateTime()));
                 statement.bindString(5, task.getTaskPriority().toString());
                 statement.bindLong(6, task.areNotificationsEnabled() ? 1 : 0);
                 statement.bindLong(7, task.getId());
@@ -151,14 +153,8 @@ public class TaskRepository extends SQLiteOpenHelper {
         task.setId(cursor.getLong(0));
         task.setName(cursor.getString(1));
         task.setDescription(cursor.getString(2));
-
-        try {
-            task.setStartDateTime(DATE_FORMAT.parse(cursor.getString(3)));
-            task.setEndDateTime(DATE_FORMAT.parse(cursor.getString(4)));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+        task.setStartDateTime(LocalDateTime.from(DATE_TIME_FORMATTER.parse(cursor.getString(3))));
+        task.setEndDateTime(LocalDateTime.from(DATE_TIME_FORMATTER.parse(cursor.getString(4))));
         task.setTaskPriority(TaskPriority.valueOf(cursor.getString(5)));
         task.setNotificationsEnabled(cursor.getLong(6) == 1);
 

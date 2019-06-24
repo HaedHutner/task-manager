@@ -1,5 +1,6 @@
 package dev.mvvasilev.taskmanager.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -13,9 +14,9 @@ public class Task {
 
     private String description;
 
-    private Date startDateTime;
+    private LocalDateTime startDateTime;
 
-    private Date endDateTime;
+    private LocalDateTime endDateTime;
 
     private TaskPriority taskPriority;
 
@@ -48,19 +49,19 @@ public class Task {
         this.description = description;
     }
 
-    public Date getStartDateTime() {
+    public LocalDateTime getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(Date startDateTime) {
+    public void setStartDateTime(LocalDateTime startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public Date getEndDateTime() {
+    public LocalDateTime getEndDateTime() {
         return endDateTime;
     }
 
-    public void setEndDateTime(Date endDateTime) {
+    public void setEndDateTime(LocalDateTime endDateTime) {
         this.endDateTime = endDateTime;
     }
 

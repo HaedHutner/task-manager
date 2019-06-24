@@ -2,7 +2,9 @@ package dev.mvvasilev.taskmanager.service;
 
 import android.content.Context;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Set;
 
 import dev.mvvasilev.taskmanager.entity.Task;
 import dev.mvvasilev.taskmanager.enums.TaskPriority;
@@ -19,8 +21,8 @@ public class TaskService {
             Context context,
             String name,
             String description,
-            Date startDate,
-            Date dueDate,
+            LocalDateTime startDate,
+            LocalDateTime dueDate,
             TaskPriority priority,
             Boolean enableNotifications
     ) {
@@ -33,6 +35,14 @@ public class TaskService {
         task.setNotificationsEnabled(enableNotifications);
 
         new TaskRepository(context).saveTask(task);
+    }
+
+    public Set<Task> getTasks(Context context) {
+        return new TaskRepository(context).getAllTasks();
+    }
+
+    public void deleteTask(Context context, Task task) {
+        new TaskRepository(context).deleteTaskById(task.getId());
     }
 
     public static TaskService getInstance() {
