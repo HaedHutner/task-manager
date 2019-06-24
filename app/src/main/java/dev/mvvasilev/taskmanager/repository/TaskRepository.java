@@ -6,9 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -69,7 +66,7 @@ public class TaskRepository extends SQLiteOpenHelper {
 
     }
 
-    public void saveTask(Task task) {
+    public Task saveTask(Task task) {
         try (SQLiteDatabase db = getWritableDatabase()) {
             try (SQLiteStatement statement = db.compileStatement(SAVE_TASK)) {
                 statement.bindString(1, task.getName());
@@ -82,6 +79,8 @@ public class TaskRepository extends SQLiteOpenHelper {
                 task.setId(statement.executeInsert());
             }
         }
+
+        return task;
     }
 
     public void updateTask(Task task) {

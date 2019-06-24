@@ -3,7 +3,6 @@ package dev.mvvasilev.taskmanager.service;
 import android.content.Context;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Set;
 
 import dev.mvvasilev.taskmanager.entity.Task;
@@ -17,7 +16,7 @@ public class TaskService {
     private TaskService() {
     }
 
-    public void createTask(
+    public Task createTask(
             Context context,
             String name,
             String description,
@@ -34,7 +33,7 @@ public class TaskService {
         task.setTaskPriority(priority);
         task.setNotificationsEnabled(enableNotifications);
 
-        new TaskRepository(context).saveTask(task);
+        return new TaskRepository(context).saveTask(task);
     }
 
     public Set<Task> getTasks(Context context) {

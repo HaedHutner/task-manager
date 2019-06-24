@@ -1,12 +1,21 @@
 package dev.mvvasilev.taskmanager.ui.main.fragment;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +23,15 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabLayout;
@@ -29,10 +41,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import java.util.Locale;
 
+import dev.mvvasilev.taskmanager.MainActivity;
 import dev.mvvasilev.taskmanager.R;
+import dev.mvvasilev.taskmanager.entity.Task;
 import dev.mvvasilev.taskmanager.enums.TaskPriority;
 import dev.mvvasilev.taskmanager.service.TaskService;
+import dev.mvvasilev.taskmanager.ui.main.TaskNotificationPublisher;
 
 public class CreateTaskFragment extends Fragment {
 
@@ -86,7 +103,7 @@ public class CreateTaskFragment extends Fragment {
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     parentView.getContext(),
                     (dateSetView, year, month, dayOfMonth) -> {
-                        startDate = LocalDate.of(year, month, dayOfMonth);
+                        startDate = LocalDate.of(year, month + 1, dayOfMonth);
                         startDateInput.setText(DATE_FORMATTER.format(startDate));
                     },
                     LocalDate.now().getYear(),
@@ -118,7 +135,7 @@ public class CreateTaskFragment extends Fragment {
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     parentView.getContext(),
                     (dateSetView, year, month, dayOfMonth) -> {
-                        dueDate = LocalDate.of(year, month, dayOfMonth);
+                        dueDate = LocalDate.of(year, month + 1, dayOfMonth);
                         dueDateInput.setText(DATE_FORMATTER.format(dueDate));
                     },
                     LocalDate.now().getYear(),
@@ -147,7 +164,8 @@ public class CreateTaskFragment extends Fragment {
         RadioButton highPriorityInput = parentView.findViewById(R.id.highPriorityRadioButton);
         RadioButton normalPriorityInput = parentView.findViewById(R.id.normalPriorityRadioButton);
         RadioButton lowPriorityInput = parentView.findViewById(R.id.lowPriorityRadioButton);
-        RadioButton notificationInput = parentView.findViewById(R.id.notificationInput);
+
+        Switch notificationInput = parentView.findViewById(R.id.notificationInput);
 
         final Button createTaskButton = parentView.findViewById(R.id.createTaskButton);
         createTaskButton.setOnClickListener(view -> {
@@ -199,7 +217,12 @@ public class CreateTaskFragment extends Fragment {
             LocalDateTime startDateTime = LocalDateTime.of(startDate, startTime);
             LocalDateTime dueDateTime = LocalDateTime.of(dueDate, dueTime);
 
-            TaskService.getInstance().createTask(
+            if (dueDateTime.isBefore(startDateTime)) {
+                createErrorDialog(parentView, "Start datetime must be before due datetime").show();
+                return;
+            }
+
+            Task task = TaskService.getInstance().createTask(
                     getContext(),
                     name,
                     description,
@@ -208,6 +231,28 @@ public class CreateTaskFragment extends Fragment {
                     priority,
                     notifications
             );
+
+            if (notifications) {
+                String content = String.format("Starts: %s at %s", DATE_FORMATTER.format(startDateTime.toLocalDate()), TIME_FORMATTER.format(startDateTime.toLocalTime()));
+
+                int priority;
+                switch (task.getTaskPriority()) {
+                    case LOW:
+                        priority = NotificationManager.IMPORTANCE_LOW;
+                        break;
+                    case MEDIUM:
+                        priority = NotificationManager.IMPORTANCE_DEFAULT;
+                        break;
+                    case HIGH:
+                        priority = NotificationManager.IMPORTANCE_HIGH;
+                        break;
+                    default:
+                        priority = NotificationManager.IMPORTANCE_LOW;
+                        break;
+                }
+
+                scheduleNotification(getContext(), task.getName(), content, task.getStartDateTime(), task.getId().intValue(), priority);
+            }
 
             TabLayout tabhost = getActivity().findViewById(R.id.tabs);
             tabhost.getTabAt(0).select();
@@ -235,19 +280,51 @@ public class CreateTaskFragment extends Fragment {
         Dialog errorDialog = new Dialog(parentView.getContext());
         errorDialog.setTitle("Error");
 
+        CardView errorCard = new CardView(errorDialog.getContext());
+
         ConstraintLayout layout = new ConstraintLayout(errorDialog.getContext());
-        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(5, 5, 5, 5);
 
         TextView errorTextView = new TextView(errorDialog.getContext());
         errorTextView.setText(error);
         errorTextView.setTextColor(Color.RED);
 
-        layout.addView(errorTextView, layoutParams);
+        layout.addView(errorTextView);
 
-        errorDialog.setContentView(layout);
+        CardView.LayoutParams params = new CardView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(20, 20, 20, 20);
+        errorCard.addView(layout, params);
+
+        errorDialog.setContentView(errorCard);
 
         return errorDialog;
+    }
+
+    public void scheduleNotification(Context context, String title, String content, LocalDateTime when, int notificationId, int priority) {
+        long delay = ChronoUnit.MILLIS.between(LocalDateTime.now(), when);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(title)
+                .setContentText(content)
+                .setAutoCancel(true)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setChannelId("task_notification_channel");
+
+        Intent intent = new Intent(context, MainActivity.class);
+        PendingIntent activity = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        builder.setContentIntent(activity);
+
+        Notification notification = builder.build();
+
+        Intent notificationIntent = new Intent(context, TaskNotificationPublisher.class);
+        notificationIntent.putExtra("task_notification_id", notificationId);
+        notificationIntent.putExtra("task_notification", notification);
+        notificationIntent.putExtra("task_notification_priority", priority);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
 
     /**

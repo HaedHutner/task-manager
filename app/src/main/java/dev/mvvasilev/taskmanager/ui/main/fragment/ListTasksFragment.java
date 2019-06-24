@@ -68,6 +68,9 @@ public class ListTasksFragment extends Fragment {
             name.setText(task.getName());
             name.setTextSize(24);
 
+            TextView description = new TextView(getContext());
+            description.setText(task.getDescription());
+
             TextView startDatetime = new TextView(getContext());
             startDatetime.setText("Starts: " + DATE_TIME_FORMATTER.format(task.getStartDateTime()));
 
@@ -82,6 +85,7 @@ public class ListTasksFragment extends Fragment {
             });
 
             layout.addView(name);
+            layout.addView(description);
             layout.addView(startDatetime);
             layout.addView(dueDatetime);
             layout.addView(deleteButton);
